@@ -1,0 +1,13 @@
+# The main pipeline for dab_poc_gat
+resources:
+  pipelines:
+    dab_poc_gat_pipeline:
+      name: dab_poc_gat_pipeline
+      catalog: wps_dab_poc_premium
+      schema: dab_poc_gat_${bundle.target}
+      libraries:
+        - notebook:
+            path: ../src/dlt_pipeline.ipynb
+
+      configuration:
+        bundle.sourcePath: ${workspace.file_path}/src
