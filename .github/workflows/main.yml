@@ -25,16 +25,23 @@ jobs:
         run: |
           pip install databricks-cli --upgrade
 
-      - name: Debug
+      - name: Debug: Show current directory
+        run: pwd
+
+      - name: Debug: List top-level contents
+        run: ls -lha
+
+      - name: Debug: List entire folder structure
         run: ls -R
 
       - name: Deploy Databricks Bundle to dev
-        working-directory: dab_poc_gat/databricks
-        shell: bash
         env:
           DATABRICKS_HOST: ${{ secrets.HOST }}
           DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
           DATABRICKS_CLIENT_SECRET: ${{ secrets.SECRET }}
           DATABRICKS_TENANT_ID: ${{ secrets.TENANT_ID }}
         run: |
+          echo "Navigating to bundle folder..."
+          cd dab_poc_gat/databricks
+          echo "Running bundle deploy..."
           databricks bundle deploy --target dev
