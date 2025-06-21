@@ -5,11 +5,12 @@ on:
     branches:
       - main
     paths:
-      - 'databricks/**'
-      - '.github/workflows/deploy.yml'
+      - 'databricks/**'  # Only trigger if files in databricks/ change
+      - '.github/workflows/dev.yml'
 
 jobs:
   deploy-dab:
+    name: Deploy DAB to Dev
     runs-on: ubuntu-latest
 
     steps:
@@ -21,24 +22,23 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install Databricks CLI v0.205+
+      - name: Install Databricks CLI
         run: |
-          pip install databricks-cli --upgrade
+          pip install databricks-cli
 
-      - name: Set environment variables for Databricks auth
-        run: echo "Environment variables set"
-        env:
-          DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
-          DATABRICKS_CLIENT_SECRET: ${{ secrets.SECRET }}
-          DATABRICKS_TENANT_ID: ${{ secrets.TENANT_ID }}
-          DATABRICKS_HOST: ${{ secrets.HOST }}
+      - name: Configure Databricks CLI (OAuth - Service Principal)
+        run: |
+          databricks configure --quiet --profile dev <<EOF
+          {
+            "host": "${{ secrets.HOST }}",
+            "client_id": "${{ secrets.CLIENT_ID }}",
+            "client_secret": "${{ secrets.SECRET }}",
+            "tenant_id": "${{ secrets.TENANT_ID }}"
+          }
+          EOF
+        shell: bash
 
-      - name: Deploy Databricks Bundle to dev
+      - name: Deploy Databricks Bundle
         working-directory: databricks
-        env:
-          DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
-          DATABRICKS_CLIENT_SECRET: ${{ secrets.SECRET }}
-          DATABRICKS_TENANT_ID: ${{ secrets.TENANT_ID }}
-          DATABRICKS_HOST: ${{ secrets.HOST }}
         run: |
-          databricks bundle deploy --target dev
+          databricks bundle deploy --profile dev
