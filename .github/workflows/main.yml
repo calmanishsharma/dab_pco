@@ -16,17 +16,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install New Databricks CLI (v0.205+) manually
+      - name: Install Databricks CLI v0.205.0 (manual binary)
         run: |
-          curl -L https://github.com/databricks/cli/releases/download/v0.205.0/databricks_linux_amd64.zip -o databricks.zip
-          unzip databricks.zip -d $HOME/databricks-cli
-          chmod +x $HOME/databricks-cli/databricks
-          echo "$HOME/databricks-cli" >> $GITHUB_PATH
+          curl -L https://github.com/databricks/cli/releases/download/v0.205.0/databricks_linux_amd64 -o $HOME/databricks
+          chmod +x $HOME/databricks
+          echo "$HOME" >> $GITHUB_PATH
 
-      - name: Verify CLI installation
-        run: |
-          ls -l $HOME/databricks-cli
-          databricks version
+      - name: Verify Databricks CLI version
+        run: databricks version
 
       - name: Deploy Databricks Bundle to dev
         working-directory: dab_poc_gat
@@ -35,5 +32,4 @@ jobs:
           DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
           DATABRICKS_CLIENT_SECRET: ${{ secrets.SECRET }}
           DATABRICKS_TENANT_ID: ${{ secrets.TENANT_ID }}
-        run: |
-          databricks bundle deploy --target dev
+        run: databricks bundle deploy --target dev
