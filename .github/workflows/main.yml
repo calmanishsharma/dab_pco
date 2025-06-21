@@ -25,13 +25,13 @@ jobs:
         run: |
           pip install databricks-cli --upgrade
 
-      - name: Debug: Show current directory
+      - name: Debug
         run: pwd
 
-      - name: Debug: List top-level contents
+      - name: Debug
         run: ls -lha
 
-      - name: Debug: List entire folder structure
+      - name: Debug
         run: ls -R
 
       - name: Deploy Databricks Bundle to dev
