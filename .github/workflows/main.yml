@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'databricks/**'
+      - 'dab_poc_gat/databricks/**'
       - '.github/workflows/main.yml'
 
 jobs:
@@ -25,8 +25,11 @@ jobs:
         run: |
           pip install databricks-cli --upgrade
 
+      - name: Debug
+        run: ls -R
+
       - name: Deploy Databricks Bundle to dev
-        working-directory: databricks
+        working-directory: dab_poc_gat/databricks
         env:
           DATABRICKS_HOST: ${{ secrets.HOST }}
           DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
