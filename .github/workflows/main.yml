@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'dab_poc/dab_poc_gat/databricks/**'
+      - 'dab_poc_gat/databricks/**'
       - '.github/workflows/main.yml'
 
 jobs:
@@ -27,8 +27,10 @@ jobs:
 
       - name: Debug
         run: ls -R
+
       - name: Deploy Databricks Bundle to dev
         working-directory: dab_poc_gat/databricks
+        shell: bash
         env:
           DATABRICKS_HOST: ${{ secrets.HOST }}
           DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
