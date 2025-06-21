@@ -1,0 +1,44 @@
+name: Deploy Databricks DAB to Dev
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'databricks/**'  # Only trigger if files in databricks/ change
+      - '.github/workflows/dev.yml'
+
+jobs:
+  deploy-dab:
+    name: Deploy DAB to Dev
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Databricks CLI
+        run: |
+          pip install databricks-cli
+
+      - name: Configure Databricks CLI (OAuth - Service Principal)
+        run: |
+          databricks configure --quiet --profile dev <<EOF
+          {
+            "host": "${{ secrets.HOST }}",
+            "client_id": "${{ secrets.CLIENT_ID }}",
+            "client_secret": "${{ secrets.SECRET }}",
+            "tenant_id": "${{ secrets.TENANT_ID }}"
+          }
+          EOF
+        shell: bash
+
+      - name: Deploy Databricks Bundle
+        working-directory: databricks
+        run: |
+          databricks bundle deploy --profile dev
