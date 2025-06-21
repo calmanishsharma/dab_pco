@@ -1,4 +1,4 @@
-name: Deploy Databricks DAB to Dev
+name: Deploy Databricks DAB 2 to Dev
 
 on:
   push:
