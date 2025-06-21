@@ -20,13 +20,18 @@ jobs:
         run: |
           curl -fsSL https://raw.githubusercontent.com/databricks/cli/main/install.sh | bash
           echo "$HOME/.databricks/bin" >> $GITHUB_PATH
+          echo "export PATH=$HOME/.databricks/bin:$PATH" >> $GITHUB_ENV
 
-      - name: Check Databricks CLI Version
-        run: databricks version
+      - name: Verify CLI location and version
+        run: |
+          echo "PATH: $PATH"
+          ls -l $HOME/.databricks/bin
+          $HOME/.databricks/bin/databricks version
 
       - name: Deploy Databricks Bundle to dev
         working-directory: dab_poc_gat
         env:
+          PATH: ${{ env.PATH }}:$HOME/.databricks/bin
           DATABRICKS_HOST: ${{ secrets.HOST }}
           DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
           DATABRICKS_CLIENT_SECRET: ${{ secrets.SECRET }}
