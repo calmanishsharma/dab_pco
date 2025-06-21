@@ -16,7 +16,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install Databricks CLI (latest stable from GitHub)
+      - name: Install Latest Databricks CLI (v0.2xx)
         run: |
           latest_url=$(curl -s https://api.github.com/repos/databricks/cli/releases/latest \
             | grep "browser_download_url" \
@@ -37,9 +37,9 @@ jobs:
 
       - name: Deploy Databricks Bundle to dev
         working-directory: dab_poc_gat
-        env:
-          DATABRICKS_HOST: ${{ secrets.HOST }}
-          DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
-          DATABRICKS_CLIENT_SECRET: ${{ secrets.SECRET }}
-          DATABRICKS_TENANT_ID: ${{ secrets.TENANT_ID }}
-        run: databricks bundle deploy --target dev
+        run: |
+          export DATABRICKS_HOST="${{ secrets.HOST }}"
+          export DATABRICKS_CLIENT_ID="${{ secrets.CLIENT_ID }}"
+          export DATABRICKS_CLIENT_SECRET="${{ secrets.SECRET }}"
+          export DATABRICKS_TENANT_ID="${{ secrets.TENANT_ID }}"
+          databricks bundle deploy --target dev
