@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'dab_poc_gat/databricks/**'
+      - 'dab_poc/dab_poc_gat/databricks/**'
       - '.github/workflows/main.yml'
 
 jobs:
