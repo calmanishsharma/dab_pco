@@ -25,9 +25,8 @@ jobs:
         run: |
           pip install databricks-cli --upgrade
 
-      - name: Debug: List directory structure
+      - name: Debug
         run: ls -R
-
       - name: Deploy Databricks Bundle to dev
         working-directory: dab_poc_gat/databricks
         env:
