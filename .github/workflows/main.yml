@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - 'databricks/**'
-      - '.github/workflows/dev.yml'
+      - '.github/workflows/main.yml'
 
 jobs:
   deploy-dab:
