@@ -2,18 +2,12 @@
 # within a pre-production target named "dev".
 name: 'Dev deployment'
 
-# Ensure that only a single job or workflow using the same concurrency group
-# runs at a time.
 concurrency: 1
 
-# Trigger this workflow whenever code is pushed to the main branch
 on:
   push:
     branches:
       - main
-    paths:
-      - 'dab_poc_gat/**'
-      - '.github/workflows/main.yml'
 
 jobs:
   deploy:
@@ -26,7 +20,7 @@ jobs:
       - uses: databricks/setup-cli@main
 
       - run: databricks bundle deploy
-        working-directory: .
+        working-directory: dab_poc_gat
         env:
           DATABRICKS_TOKEN: ${{ secrets.CLIENT_SECRET }}
           DATABRICKS_BUNDLE_ENV: dev
@@ -43,7 +37,7 @@ jobs:
       - uses: databricks/setup-cli@main
 
       - run: databricks bundle run my-job --refresh-all
-        working-directory: .
+        working-directory: dab_poc_gat
         env:
           DATABRICKS_TOKEN: ${{ secrets.CLIENT_SECRET }}
           DATABRICKS_BUNDLE_ENV: dev
