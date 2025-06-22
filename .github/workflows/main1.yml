@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - 'dab_poc_gat/**'
-      - '.github/workflows/main.yml'
+      - '.github/workflows/main1.yml'
 
 jobs:
   deploy-dab:
