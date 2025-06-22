@@ -24,13 +24,11 @@ jobs:
 
       - name: Install NEW Databricks CLI
         run: |
-          pip uninstall -y databricks-cli
-          pip install 'databricks-cli>=0.205.0,<1.0.0'
+          pip install --upgrade databricks
 
-      - name: Show current directory (debugging)
+      - name: Verify CLI version
         run: |
-          echo "Current directory: $(pwd)"
-          ls -al
+          databricks version
 
       - name: Deploy Databricks Bundle
         env:
