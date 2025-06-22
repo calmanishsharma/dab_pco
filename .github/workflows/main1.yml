@@ -1,42 +1,46 @@
-name: Deploy Databricks DAB to Dev
+name: Deploy Databricks DAB 23 to Dev
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'dab_pco/dab_poc_gat/databricks.yml'
+      - 'dab_poc_gat/**'
       - '.github/workflows/main1.yml'
 
 jobs:
   deploy-dab:
-    name: Deploy DAB to Dev
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Install NEW Databricks CLI (user scope)
+      - name: Install Latest Databricks CLI (v0.2xx)
         run: |
-          pip install --user databricks
+          latest_url=$(curl -s https://api.github.com/repos/databricks/cli/releases/latest \
+            | grep "browser_download_url" \
+            | grep "linux_amd64.tar.gz" \
+            | cut -d '"' -f 4)
 
-      - name: Verify Databricks CLI Version
-        run: |
-          export PATH="$HOME/.local/bin:$PATH"
-          databricks --version
+          echo "Downloading: $latest_url"
+          curl -L "$latest_url" -o cli.tar.gz
 
-      - name: Deploy Databricks Bundle
+          mkdir -p $HOME/databricks-cli
+          tar -xzf cli.tar.gz -C $HOME/databricks-cli
+          chmod +x $HOME/databricks-cli/databricks
+
+          echo "$HOME/databricks-cli" >> $GITHUB_PATH
+
+      - name: Verify Databricks CLI version
+        run: databricks version
+
+      - name: Deploy Databricks Bundle to dev (using client credentials)
+        working-directory: dab_poc_gat
         env:
           DATABRICKS_HOST: ${{ secrets.HOST }}
           DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
-          DATABRICKS_CLIENT_SECRET: ${{ secrets.SECRET }}
+          DATABRICKS_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           DATABRICKS_TENANT_ID: ${{ secrets.TENANT_ID }}
         run: |
-          export PATH="$HOME/.local/bin:$PATH"
-          databricks bundle deploy --profile dev
+          databricks bundle deploy --target dev
