@@ -2,7 +2,7 @@
 resources:
   jobs:
     dab_poc_gat_job:
-      name: dab_poc_gat_job
+      name: job1
 
       trigger:
         # Run this job every day, exactly one day from the last run; see https://docs.databricks.com/api/workspace/jobs/create#trigger
@@ -47,4 +47,4 @@ resources:
             data_security_mode: SINGLE_USER
             autoscale:
               min_workers: 1
-              max_workers: 4
+              max_workers: 1
