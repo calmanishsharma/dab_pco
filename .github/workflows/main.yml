@@ -35,11 +35,10 @@ jobs:
       - name: Verify Databricks CLI version
         run: databricks version
 
-      - name: Deploy Databricks Bundle to dev
+      - name: Deploy Databricks Bundle to dev (using token)
         working-directory: dab_poc_gat
+        env:
+          DATABRICKS_HOST: ${{ secrets.HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_PAT }}
         run: |
-          export DATABRICKS_HOST="${{ secrets.HOST }}"
-          export DATABRICKS_CLIENT_ID="${{ secrets.CLIENT_ID }}"
-          export DATABRICKS_CLIENT_SECRET="${{ secrets.SECRET }}"
-          export DATABRICKS_TENANT_ID="${{ secrets.TENANT_ID }}"
           databricks bundle deploy --target dev
