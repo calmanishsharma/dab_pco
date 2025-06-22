@@ -22,11 +22,12 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install Databricks CLI
+      - name: Install NEW Databricks CLI
         run: |
-          pip install databricks-cli
+          pip uninstall -y databricks-cli
+          pip install 'databricks-cli>=0.205.0,<1.0.0'
 
-      - name: Show directory structure (debugging)
+      - name: Show current directory (debugging)
         run: |
           echo "Current directory: $(pwd)"
           ls -al
