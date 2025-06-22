@@ -43,6 +43,15 @@ jobs:
         run: databricks version
         shell: bash
 
+      - name: Test Databricks Auth via Service Principal
+        env:
+          DATABRICKS_HOST: ${{ secrets.HOST }}
+          DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          DATABRICKS_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          DATABRICKS_TENANT_ID: ${{ secrets.TENANT_ID }}
+        run: databricks workspace ls /
+        shell: bash
+
       - name: Deploy Databricks Bundle to dev
         working-directory: dab_poc_gat
         env:
