@@ -47,6 +47,7 @@ jobs:
         env:
           DATABRICKS_HOST: ${{ secrets.HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_PAT }}
+          DATABRICKS_AUTH_TYPE: pat
         run: |
           echo "Testing Databricks connectivity..."
           databricks workspace list /
@@ -57,6 +58,7 @@ jobs:
         env:
           DATABRICKS_HOST: ${{ secrets.HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_PAT }}
+          DATABRICKS_AUTH_TYPE: pat
         run: |
           unset DATABRICKS_CONFIG_PROFILE
           databricks bundle deploy --target dev
