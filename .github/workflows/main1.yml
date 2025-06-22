@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - 'dab_poc_gat/**'
-      - '.github/workflows/main1.yml'
+      - '.github/workflows/main.yml'
 
 jobs:
   deploy-dab:
@@ -29,6 +29,7 @@ jobs:
           mkdir -p $HOME/.local/bin
           tar -xzf databricks.tar.gz
 
+          # Move actual CLI binary to PATH
           find . -type f -name "databricks" -exec mv {} $HOME/.local/bin/databricks \;
           chmod +x $HOME/.local/bin/databricks
 
@@ -43,23 +44,26 @@ jobs:
         run: databricks version
         shell: bash
 
-      - name: Test Databricks Auth via Service Principal
+      - name: Configure Databricks profile (token-based)
         env:
           DATABRICKS_HOST: ${{ secrets.HOST }}
-          DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
-          DATABRICKS_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-          DATABRICKS_TENANT_ID: ${{ secrets.TENANT_ID }}
-        run: databricks workspace ls /
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_PAT }}
+        run: |
+          mkdir -p ~/.databricks
+          echo '[default]' > ~/.databricks/config
+          echo "host = $DATABRICKS_HOST" >> ~/.databricks/config
+          echo "token = $DATABRICKS_TOKEN" >> ~/.databricks/config
+        shell: bash
+
+      - name: List workspace root
+        env:
+          DATABRICKS_CONFIG_PROFILE: default
+        run: databricks workspace list /
         shell: bash
 
       - name: Deploy Databricks Bundle to dev
         working-directory: dab_poc_gat
         env:
-          DATABRICKS_HOST: ${{ secrets.HOST }}
-          DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
-          DATABRICKS_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-          DATABRICKS_TENANT_ID: ${{ secrets.TENANT_ID }}
-        run: |
-          unset DATABRICKS_CONFIG_PROFILE
-          databricks bundle deploy --target dev
+          DATABRICKS_CONFIG_PROFILE: default
+        run: databricks bundle deploy --target dev
         shell: bash
