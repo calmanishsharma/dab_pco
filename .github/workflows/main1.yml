@@ -16,7 +16,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install Latest Databricks CLI (v0.205+)
+      - name: Install Databricks CLI v0.205+
         run: |
           latest_url=$(curl -s https://api.github.com/repos/databricks/cli/releases/latest \
             | grep "browser_download_url" \
@@ -31,10 +31,11 @@ jobs:
           chmod +x $HOME/databricks-cli/databricks
 
           echo "$HOME/databricks-cli" >> $GITHUB_PATH
-          export PATH="$HOME/databricks-cli:$PATH"
 
-      - name: Verify Databricks CLI version
-        run: databricks version
+      - name: Confirm CLI version (should be 0.2xx)
+        run: |
+          export PATH=$HOME/databricks-cli:$PATH
+          databricks version
 
       - name: Configure Databricks profile (token-based)
         env:
@@ -43,11 +44,12 @@ jobs:
         run: |
           mkdir -p ~/.databricks
           echo '[default]' > ~/.databricks/config
-          echo "host = ${DATABRICKS_HOST}" >> ~/.databricks/config
-          echo "token = ${DATABRICKS_TOKEN}" >> ~/.databricks/config
+          echo "host = $DATABRICKS_HOST" >> ~/.databricks/config
+          echo "token = $DATABRICKS_TOKEN" >> ~/.databricks/config
 
       - name: Deploy Databricks Bundle to dev
         working-directory: dab_poc_gat
         env:
           DATABRICKS_CONFIG_PROFILE: default
+          PATH: $HOME/databricks-cli:$PATH
         run: databricks bundle deploy --target dev
