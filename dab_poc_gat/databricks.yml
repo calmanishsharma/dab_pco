@@ -8,7 +8,7 @@ include:
 resources:
   jobs:
     run-pipeline:               # 👈 this is the key you will use in your GitHub Action
-      path: resources/pipeline1.yml
+      path: resources/job1.yml
 
 targets:
   dev:
