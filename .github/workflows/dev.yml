@@ -1,52 +1,47 @@
-name: Deploy Databricks DAB 23 to Dev
+name: 'Dev deployment111'
+
+concurrency: 1
 
 on:
   push:
     branches:
       - main
-    paths:
-      - 'dab_poc_gat/**'
-      - '.github/workflows/dev.yml'
 
 jobs:
-  deploy-dab:
+  deploy:
+    name: 'Deploy bundle'
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Install Latest Databricks CLI (v0.2xx)
-        run: |
-          latest_url=$(curl -s https://api.github.com/repos/databricks/cli/releases/latest \
-            | grep "browser_download_url" \
-            | grep "linux_amd64.tar.gz" \
-            | cut -d '"' -f 4)
+      - uses: databricks/setup-cli@main
 
-          echo "Downloading: $latest_url"
-          curl -L "$latest_url" -o cli.tar.gz
-
-          mkdir -p $HOME/databricks-cli
-          tar -xzf cli.tar.gz -C $HOME/databricks-cli
-          chmod +x $HOME/databricks-cli/databricks
-
-          echo "$HOME/databricks-cli" >> $GITHUB_PATH
-
-      - name: Verify Databricks CLI version
-        run: databricks version
-
-      - name: Deploy Databricks Bundle to dev (using PAT)
+      - run: databricks bundle deploy --auto-approve
         working-directory: dab_poc_gat
         env:
           DATABRICKS_HOST: ${{ secrets.HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_PAT }}
-        run: |
-          mkdir -p ~/.databricks
-          cat <<EOF > ~/.databricks/config
-[default]
-host = ${DATABRICKS_HOST}
-token = ${DATABRICKS_TOKEN}
-EOF
+          DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          DATABRICKS_CLIENT_SECRET: ${{ secrets.SECRET }}
+          DATABRICKS_TENANT_ID: ${{ secrets.TENANT_ID }}
+          DATABRICKS_BUNDLE_ENV: dev
 
-          export DATABRICKS_CONFIG_PROFILE=default
-          databricks bundle deploy --target dev
+  pipeline_update:
+    name: 'Run pipeline update'
+    runs-on: ubuntu-latest
+    needs:
+      - deploy
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: databricks/setup-cli@main
+
+      - run: databricks bundle run data_load --refresh-all
+        working-directory: dab_poc_gat
+        env:
+          DATABRICKS_HOST: ${{ secrets.HOST }}
+          DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          DATABRICKS_CLIENT_SECRET: ${{ secrets.SECRET }}
+          DATABRICKS_TENANT_ID: ${{ secrets.TENANT_ID }}
+          DATABRICKS_BUNDLE_ENV: dev
