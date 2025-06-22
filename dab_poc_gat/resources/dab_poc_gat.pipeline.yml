@@ -2,7 +2,7 @@
 resources:
   pipelines:
     dab_poc_gat_pipeline:
-      name: pipeline1
+      name: dab_poc_gat_pipeline
       catalog: wps_dab_poc_premium
       schema: dab_poc_gat_${bundle.target}
       libraries:
