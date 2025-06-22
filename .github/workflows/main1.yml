@@ -5,8 +5,8 @@ on:
     branches:
       - main
     paths:
-      - 'dab_pco/databricks/**'         # Only trigger if files in the bundle change
-      - '.github/workflows/main1.yml'   # Also trigger if this workflow file changes
+      - 'dab_pco/databricks/**'
+      - '.github/workflows/main1.yml'
 
 jobs:
   deploy-dab:
@@ -27,7 +27,7 @@ jobs:
           pip install databricks-cli
 
       - name: Deploy Databricks Bundle
-        working-directory: dab_pco/databricks
+        working-directory: dab_pco/databricks   # ✅ Correct path
         env:
           DATABRICKS_HOST: ${{ secrets.HOST }}
           DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
