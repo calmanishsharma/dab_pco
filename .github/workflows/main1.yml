@@ -1,65 +1,44 @@
-name: Deploy Databricks DAB 23 to Dev
+name: Deploy Databricks DAB to Dev
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'dab_poc_gat/**'
+      - 'databricks/**'  # Only trigger if files in databricks/ change
       - '.github/workflows/main1.yml'
 
 jobs:
   deploy-dab:
+    name: Deploy DAB to Dev
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Latest Databricks CLI (v0.2xx+)
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Databricks CLI
         run: |
-          latest_url=$(curl -s https://api.github.com/repos/databricks/cli/releases/latest \
-            | grep "browser_download_url" \
-            | grep "linux_amd64.tar.gz" \
-            | cut -d '"' -f 4)
+          pip install databricks-cli
 
-          echo "Downloading CLI from: $latest_url"
-          curl -L "$latest_url" -o databricks.tar.gz
-
-          mkdir -p $HOME/.local/bin
-          tar -xzf databricks.tar.gz
-
-          find . -type f -name "databricks" -exec mv {} $HOME/.local/bin/databricks \;
-          chmod +x $HOME/.local/bin/databricks
-
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-        shell: bash
-
-      - name: Set PATH for job
-        run: echo "PATH=$HOME/.local/bin:$PATH" >> $GITHUB_ENV
-        shell: bash
-
-      - name: Confirm Databricks CLI version
-        run: databricks version
-        shell: bash
-
-      - name: Test Databricks Auth via PAT
-        env:
-          DATABRICKS_HOST: ${{ secrets.HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_PAT }}
-          DATABRICKS_AUTH_TYPE: pat
+      - name: Configure Databricks CLI (OAuth - Service Principal)
         run: |
-          echo "Testing Databricks connectivity..."
-          databricks workspace list /
+          databricks configure --quiet --profile dev <<EOF
+          {
+            "host": "${{ secrets.HOST }}",
+            "client_id": "${{ secrets.CLIENT_ID }}",
+            "client_secret": "${{ secrets.SECRET }}",
+            "tenant_id": "${{ secrets.TENANT_ID }}"
+          }
+          EOF
         shell: bash
 
-      - name: Deploy Databricks Bundle to dev
-        working-directory: dab_poc_gat
-        env:
-          DATABRICKS_HOST: ${{ secrets.HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_PAT }}
-          DATABRICKS_AUTH_TYPE: pat
+      - name: Deploy Databricks Bundle
+        working-directory: databricks
         run: |
-          unset DATABRICKS_CONFIG_PROFILE
-          databricks bundle deploy --target dev
-        shell: bash
+          databricks bundle deploy --profile dev
