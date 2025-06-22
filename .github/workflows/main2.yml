@@ -24,8 +24,6 @@ jobs:
           DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
           DATABRICKS_CLIENT_SECRET: ${{ secrets.SECRET }}
           DATABRICKS_TENANT_ID: ${{ secrets.TENANT_ID }}
-          DATABRICKS_AUTH_TYPE: azure-client-secret
-          DATABRICKS_CONFIG_PROFILE: DEFAULT
           DATABRICKS_BUNDLE_ENV: dev
 
   pipeline_update:
@@ -46,6 +44,4 @@ jobs:
           DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
           DATABRICKS_CLIENT_SECRET: ${{ secrets.SECRET }}
           DATABRICKS_TENANT_ID: ${{ secrets.TENANT_ID }}
-          DATABRICKS_AUTH_TYPE: azure-client-secret
-          DATABRICKS_CONFIG_PROFILE: DEFAULT
           DATABRICKS_BUNDLE_ENV: dev
