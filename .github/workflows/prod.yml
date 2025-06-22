@@ -44,4 +44,4 @@ jobs:
           DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
           DATABRICKS_CLIENT_SECRET: ${{ secrets.SECRET }}
           DATABRICKS_TENANT_ID: ${{ secrets.TENANT_ID }}
-          DATABRICKS_BUNDLE_ENV: dev
+          DATABRICKS_BUNDLE_ENV: prod
