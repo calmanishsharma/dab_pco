@@ -1,5 +1,3 @@
-# This workflow validates, deploys, and runs the specified bundle
-# within a pre-production target named "dev".
 name: 'Dev deployment'
 
 concurrency: 1
@@ -26,6 +24,7 @@ jobs:
           DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
           DATABRICKS_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           DATABRICKS_TENANT_ID: ${{ secrets.TENANT_ID }}
+          DATABRICKS_AUTH_TYPE: azure-client-secret
           DATABRICKS_BUNDLE_ENV: dev
 
   pipeline_update:
@@ -46,4 +45,5 @@ jobs:
           DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
           DATABRICKS_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           DATABRICKS_TENANT_ID: ${{ secrets.TENANT_ID }}
+          DATABRICKS_AUTH_TYPE: azure-client-secret
           DATABRICKS_BUNDLE_ENV: dev
