@@ -49,7 +49,7 @@ jobs:
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_PAT }}
         run: |
           echo "Testing Databricks connectivity..."
-          databricks workspace ls /
+          databricks workspace list /
         shell: bash
 
       - name: Deploy Databricks Bundle to dev
