@@ -24,12 +24,11 @@ jobs:
 
       - name: Install NEW Databricks CLI
         run: |
-          pip install --upgrade databricks
+          pip install --upgrade databricks --target ~/.databricks_cli
 
       - name: Verify Databricks CLI Version
         run: |
-          export PATH=$HOME/.local/bin:$PATH
-          databricks version
+          python3 -m databricks version
 
       - name: Deploy Databricks Bundle
         env:
@@ -38,5 +37,4 @@ jobs:
           DATABRICKS_CLIENT_SECRET: ${{ secrets.SECRET }}
           DATABRICKS_TENANT_ID: ${{ secrets.TENANT_ID }}
         run: |
-          export PATH=$HOME/.local/bin:$PATH
-          databricks bundle deploy --profile dev
+          python3 -m databricks bundle deploy --profile dev
