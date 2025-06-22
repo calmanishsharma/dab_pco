@@ -1,1 +1,12 @@
-
+resources:
+  jobs:
+    data_load:
+      name: data_load
+      tasks:
+        - task_key: task1
+          notebook_task:
+            notebook_path: /Workspace/Users/cal.manish.sharma@gmail.com/.bundle/dab_poc_gat/dev/files/src/notebook
+            source: WORKSPACE
+      queue:
+        enabled: true
+      performance_target: STANDARD
