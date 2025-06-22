@@ -22,13 +22,14 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install NEW Databricks CLI and add to PATH
+      - name: Install NEW Databricks CLI
         run: |
           pip install --upgrade databricks
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Verify Databricks CLI Version
-        run: databricks version
+        run: |
+          export PATH=$HOME/.local/bin:$PATH
+          databricks version
 
       - name: Deploy Databricks Bundle
         env:
@@ -37,5 +38,5 @@ jobs:
           DATABRICKS_CLIENT_SECRET: ${{ secrets.SECRET }}
           DATABRICKS_TENANT_ID: ${{ secrets.TENANT_ID }}
         run: |
+          export PATH=$HOME/.local/bin:$PATH
           databricks bundle deploy --profile dev
-
