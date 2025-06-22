@@ -1,4 +1,4 @@
-name: 'Dev deploymentss'
+name: 'Dev deployment'
 
 concurrency: 1
 
