@@ -17,7 +17,7 @@ jobs:
 
       - uses: databricks/setup-cli@main
 
-      - run: databricks bundle deploy
+      - run: databricks bundle deploy --auto-approve
         working-directory: dab_poc_gat
         env:
           DATABRICKS_HOST: ${{ secrets.HOST }}
