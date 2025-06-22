@@ -16,29 +16,29 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install Databricks CLI v0.205+
+      - name: Install Latest Databricks CLI (v0.2xx)
         run: |
           latest_url=$(curl -s https://api.github.com/repos/databricks/cli/releases/latest \
             | grep "browser_download_url" \
             | grep "linux_amd64.tar.gz" \
             | cut -d '"' -f 4)
 
-          echo "Downloading: $latest_url"
+          echo "Downloading CLI from: $latest_url"
           curl -L "$latest_url" -o databricks.tar.gz
 
           mkdir -p $HOME/.local/bin
-          tar -xzf databricks.tar.gz -C $HOME/.local/bin
+          tar -xzf databricks.tar.gz
+          mv databricks* $HOME/.local/bin/databricks
           chmod +x $HOME/.local/bin/databricks
 
           echo "$HOME/.local/bin" >> $GITHUB_PATH
         shell: bash
 
-      - name: Set PATH for CLI
-        run: |
-          echo "PATH=$HOME/.local/bin:$PATH" >> $GITHUB_ENV
+      - name: Set PATH for job
+        run: echo "PATH=$HOME/.local/bin:$PATH" >> $GITHUB_ENV
         shell: bash
 
-      - name: Verify Databricks CLI version
+      - name: Confirm Databricks CLI version
         run: databricks version
         shell: bash
 
