@@ -37,7 +37,7 @@ jobs:
 
       - uses: databricks/setup-cli@main
 
-      - run: databricks bundle run my-job --refresh-all
+      - run: databricks bundle run job1 --refresh-all
         working-directory: dab_poc_gat
         env:
           DATABRICKS_HOST: ${{ secrets.HOST }}
