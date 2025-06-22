@@ -27,9 +27,6 @@ jobs:
           pip install --user databricks
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-      - name: Verify Databricks CLI Version
-        run: databricks --version
-
       - name: Deploy Databricks Bundle
         env:
           DATABRICKS_HOST: ${{ secrets.HOST }}
