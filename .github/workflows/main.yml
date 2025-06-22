@@ -33,7 +33,7 @@ jobs:
           echo "$HOME/databricks-cli" >> $GITHUB_PATH
 
       - name: Verify Databricks CLI version
-        run: databricks version
+        run: databricks version 
 
       - name: Deploy Databricks Bundle to dev (using token)
         working-directory: dab_poc_gat
