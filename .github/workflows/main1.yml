@@ -29,12 +29,16 @@ jobs:
           mkdir -p $HOME/.local/bin
           tar -xzf databricks.tar.gz -C $HOME/.local/bin
           chmod +x $HOME/.local/bin/databricks
+
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
         shell: bash
 
-      - name: Add CLI to PATH
-        run: echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - name: Set PATH for CLI
+        run: |
+          echo "PATH=$HOME/.local/bin:$PATH" >> $GITHUB_ENV
+        shell: bash
 
-      - name: Confirm Databricks CLI version
+      - name: Verify Databricks CLI version
         run: databricks version
         shell: bash
 
