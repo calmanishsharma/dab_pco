@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'databricks.yml'
+      - 'dab_pco/dab_poc_gat/databricks.yml'
       - '.github/workflows/main1.yml'
 
 jobs:
@@ -22,7 +22,7 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install NEW Databricks CLI
+      - name: Install NEW Databricks CLI and add to PATH
         run: |
           pip install --upgrade databricks
           echo "$HOME/.local/bin" >> $GITHUB_PATH
@@ -38,3 +38,4 @@ jobs:
           DATABRICKS_TENANT_ID: ${{ secrets.TENANT_ID }}
         run: |
           databricks bundle deploy --profile dev
+
