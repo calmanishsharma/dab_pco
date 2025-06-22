@@ -26,16 +26,17 @@ jobs:
           echo "Downloading: $latest_url"
           curl -L "$latest_url" -o databricks.tar.gz
 
-          mkdir -p $HOME/databricks-cli
-          tar -xzf databricks.tar.gz -C $HOME/databricks-cli
-          chmod +x $HOME/databricks-cli/databricks
+          mkdir -p $HOME/.local/bin
+          tar -xzf databricks.tar.gz -C $HOME/.local/bin
+          chmod +x $HOME/.local/bin/databricks
+        shell: bash
 
-          echo "$HOME/databricks-cli" >> $GITHUB_PATH
+      - name: Add CLI to PATH
+        run: echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-      - name: Confirm CLI version (should be 0.2xx)
-        run: |
-          export PATH=$HOME/databricks-cli:$PATH
-          databricks version
+      - name: Confirm Databricks CLI version
+        run: databricks version
+        shell: bash
 
       - name: Configure Databricks profile (token-based)
         env:
@@ -46,10 +47,11 @@ jobs:
           echo '[default]' > ~/.databricks/config
           echo "host = $DATABRICKS_HOST" >> ~/.databricks/config
           echo "token = $DATABRICKS_TOKEN" >> ~/.databricks/config
+        shell: bash
 
       - name: Deploy Databricks Bundle to dev
         working-directory: dab_poc_gat
         env:
           DATABRICKS_CONFIG_PROFILE: default
-          PATH: $HOME/databricks-cli:$PATH
         run: databricks bundle deploy --target dev
+        shell: bash
