@@ -8,7 +8,12 @@ include:
 resources:
   jobs:
     job1:
-      path: resources/job1.yml  # 👈 this defines the job key CLI will use
+      path: resources/job1.yml
+    tasks:
+        - task_key: notebook_task
+          job_cluster_key: job_cluster
+          notebook_task:
+            notebook_path: ../src/notebook.ipynb
 
 targets:
   dev:
