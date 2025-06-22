@@ -26,8 +26,13 @@ jobs:
         run: |
           pip install databricks-cli
 
+      - name: Show directory structure (debug step)
+        run: |
+          echo "Current location: $(pwd)"
+          ls -R
+
       - name: Deploy Databricks Bundle
-        working-directory: dab_pco/databricks   # ✅ Correct path
+        working-directory: databricks  # ✅ Fixed path
         env:
           DATABRICKS_HOST: ${{ secrets.HOST }}
           DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
