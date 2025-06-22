@@ -5,8 +5,8 @@ on:
     branches:
       - main
     paths:
-      - 'databricks/**'
-      - '.github/workflows/main1.yml'
+      - 'dab_pco/databricks/**'         # Only trigger if files in the bundle change
+      - '.github/workflows/main1.yml'   # Also trigger if this workflow file changes
 
 jobs:
   deploy-dab:
@@ -26,16 +26,8 @@ jobs:
         run: |
           pip install databricks-cli
 
-      - name: Set Databricks environment variables
-        run: echo "Environment variables set"
-        env:
-          DATABRICKS_HOST: ${{ secrets.HOST }}
-          DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
-          DATABRICKS_CLIENT_SECRET: ${{ secrets.SECRET }}
-          DATABRICKS_TENANT_ID: ${{ secrets.TENANT_ID }}
-
       - name: Deploy Databricks Bundle
-        working-directory: databricks
+        working-directory: dab_pco/databricks
         env:
           DATABRICKS_HOST: ${{ secrets.HOST }}
           DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
