@@ -1,12 +1,12 @@
-name: Deploy Databricks DAB 2 to Dev
+name: Deploy Databricks DAB 23 to Dev
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'databricks/**'
-      - '.github/workflows/deploy.yml'
+      - 'dab_poc_gat/**'
+      - '.github/workflows/dev.yml'
 
 jobs:
   deploy-dab:
@@ -16,21 +16,37 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Install Databricks CLI v0.205+
+      - name: Install Latest Databricks CLI (v0.2xx)
         run: |
-          pip install databricks-cli --upgrade
+          latest_url=$(curl -s https://api.github.com/repos/databricks/cli/releases/latest \
+            | grep "browser_download_url" \
+            | grep "linux_amd64.tar.gz" \
+            | cut -d '"' -f 4)
 
-      - name: Deploy Databricks Bundle to dev
-        working-directory: databricks
+          echo "Downloading: $latest_url"
+          curl -L "$latest_url" -o cli.tar.gz
+
+          mkdir -p $HOME/databricks-cli
+          tar -xzf cli.tar.gz -C $HOME/databricks-cli
+          chmod +x $HOME/databricks-cli/databricks
+
+          echo "$HOME/databricks-cli" >> $GITHUB_PATH
+
+      - name: Verify Databricks CLI version
+        run: databricks version
+
+      - name: Deploy Databricks Bundle to dev (using PAT)
+        working-directory: dab_poc_gat
         env:
           DATABRICKS_HOST: ${{ secrets.HOST }}
-          DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
-          DATABRICKS_CLIENT_SECRET: ${{ secrets.SECRET }}
-          DATABRICKS_TENANT_ID: ${{ secrets.TENANT_ID }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_PAT }}
         run: |
+          mkdir -p ~/.databricks
+          cat <<EOF > ~/.databricks/config
+[default]
+host = ${DATABRICKS_HOST}
+token = ${DATABRICKS_TOKEN}
+EOF
+
+          export DATABRICKS_CONFIG_PROFILE=default
           databricks bundle deploy --target dev
