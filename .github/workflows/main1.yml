@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'dab_pco/dab_poc_gat/databricks.yml'
+      - 'databricks.yml'
       - '.github/workflows/main1.yml'
 
 jobs:
@@ -22,13 +22,11 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install NEW Databricks CLI
+      - name: Install Databricks CLI (new) via pipx
         run: |
-          pip install --upgrade databricks
-
-      - name: Verify CLI version
-        run: |
-          databricks version
+          python -m pip install --upgrade pip pipx
+          pipx ensurepath
+          pipx install databricks
 
       - name: Deploy Databricks Bundle
         env:
@@ -36,5 +34,6 @@ jobs:
           DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
           DATABRICKS_CLIENT_SECRET: ${{ secrets.SECRET }}
           DATABRICKS_TENANT_ID: ${{ secrets.TENANT_ID }}
+          PATH: ~/.local/bin:${{ env.PATH }}
         run: |
           databricks bundle deploy --profile dev
