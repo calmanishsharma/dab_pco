@@ -29,7 +29,6 @@ jobs:
           mkdir -p $HOME/.local/bin
           tar -xzf databricks.tar.gz
 
-          # Find and move the actual CLI binary
           find . -type f -name "databricks" -exec mv {} $HOME/.local/bin/databricks \;
           chmod +x $HOME/.local/bin/databricks
 
@@ -44,20 +43,14 @@ jobs:
         run: databricks version
         shell: bash
 
-      - name: Configure Databricks profile (token-based)
-        env:
-          DATABRICKS_HOST: ${{ secrets.HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_PAT }}
-        run: |
-          mkdir -p ~/.databricks
-          echo '[default]' > ~/.databricks/config
-          echo "host = $DATABRICKS_HOST" >> ~/.databricks/config
-          echo "token = $DATABRICKS_TOKEN" >> ~/.databricks/config
-        shell: bash
-
       - name: Deploy Databricks Bundle to dev
         working-directory: dab_poc_gat
         env:
-          DATABRICKS_CONFIG_PROFILE: default
-        run: databricks bundle deploy --target dev
+          DATABRICKS_HOST: ${{ secrets.HOST }}
+          DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          DATABRICKS_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          DATABRICKS_TENANT_ID: ${{ secrets.TENANT_ID }}
+        run: |
+          unset DATABRICKS_CONFIG_PROFILE
+          databricks bundle deploy --target dev
         shell: bash
