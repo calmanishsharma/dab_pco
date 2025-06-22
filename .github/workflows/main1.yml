@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - 'dab_poc_gat/**'
-      - '.github/workflows/main1.yml'
+      - '.github/workflows/main.yml'
 
 jobs:
   deploy-dab:
@@ -16,7 +16,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install Latest Databricks CLI (v0.2xx)
+      - name: Install New Databricks CLI (v0.2xx)
         run: |
           latest_url=$(curl -s https://api.github.com/repos/databricks/cli/releases/latest \
             | grep "browser_download_url" \
@@ -24,10 +24,10 @@ jobs:
             | cut -d '"' -f 4)
 
           echo "Downloading: $latest_url"
-          curl -L "$latest_url" -o cli.tar.gz
+          curl -L "$latest_url" -o databricks.tar.gz
 
           mkdir -p $HOME/databricks-cli
-          tar -xzf cli.tar.gz -C $HOME/databricks-cli
+          tar -xzf databricks.tar.gz -C $HOME/databricks-cli
           chmod +x $HOME/databricks-cli/databricks
 
           echo "$HOME/databricks-cli" >> $GITHUB_PATH
