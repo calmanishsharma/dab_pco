@@ -17,7 +17,6 @@ targets:
     mode: development
     workspace:
       host: $DATABRICKS_HOST
-      auth_type: azure-client-secret
       client_id: $DATABRICKS_CLIENT_ID
       client_secret: $DATABRICKS_CLIENT_SECRET
       azure_tenant_id: $DATABRICKS_TENANT_ID
