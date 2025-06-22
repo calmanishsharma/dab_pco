@@ -5,16 +5,6 @@ bundle:
 include:
   - resources/*.yml
 
-resources:
-  jobs:
-    data_load:
-      path: resources/data_load.yml
-    tasks:
-        - task_key: task1
-          notebook_task:
-            notebook_path: /Workspace/Users/cal.manish.sharma@gmail.com/.bundle/dab_poc_gat/dev/files/src/notebook
-            source: WORKSPACE
-
 targets:
   dev:
     mode: development
